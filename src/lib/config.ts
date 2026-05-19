@@ -75,7 +75,7 @@ console.log(greet('world'))
 
 ---
 
-Happy writing! ✍️
+Happy writing!
 `
 
 export class AppConfig {
