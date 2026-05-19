@@ -21,6 +21,16 @@ module.exports = {
         },
         accent: 'var(--accent)',
       },
+      // Suppress the typographic backtick decorations that @tailwindcss/typography
+      // adds around <code> elements — syntax highlighting handles rendering itself.
+      typography: {
+        DEFAULT: {
+          css: {
+            'code::before': { content: 'none' },
+            'code::after':  { content: 'none' },
+          },
+        },
+      },
     },
   },
   plugins: [require('@tailwindcss/typography')],
