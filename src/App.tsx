@@ -32,14 +32,8 @@ export default function App() {
   const showEditor = viewMode === 'editor' || viewMode === 'split'
   const showPreview = viewMode === 'preview' || viewMode === 'split'
 
-  const paneBorder = isDark ? 'border-gray-700' : 'border-gray-200'
-
   return (
-    <div
-      className={`flex flex-col h-screen overflow-hidden ${
-        isDark ? 'bg-dark-base text-gray-200' : 'bg-white text-gray-900'
-      }`}
-    >
+    <div className="flex flex-col h-screen overflow-hidden bg-white dark:bg-dark-base text-gray-900 dark:text-gray-200">
       {/* ── Toolbar ────────────────────────────────────────────────────────── */}
       <Toolbar
         viewMode={viewMode}
@@ -63,7 +57,7 @@ export default function App() {
           {showEditor && (
             <div
               className={`flex-1 overflow-hidden ${
-                showPreview ? `border-r ${paneBorder}` : ''
+                showPreview ? 'border-r border-gray-200 dark:border-gray-700' : ''
               }`}
             >
               <Editor content={content} onChange={setContent} />
@@ -72,7 +66,7 @@ export default function App() {
 
           {showPreview && (
             <div className="flex-1 overflow-hidden">
-              <Preview content={content} isDark={isDark} />
+              <Preview content={content} />
             </div>
           )}
         </main>

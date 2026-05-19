@@ -29,7 +29,7 @@ import { useStore } from '../store/useStore'
 const lightTheme = EditorView.theme(
   {
     '&': { backgroundColor: '#ffffff', color: '#1e293b' },
-    '.cm-content': { padding: '16px', caretColor: '#2563eb' },
+    '.cm-content': { caretColor: '#2563eb' },
     '.cm-gutters': {
       backgroundColor: '#f8fafc',
       color: '#94a3b8',
@@ -49,6 +49,7 @@ const lightTheme = EditorView.theme(
 
 const baseLayout = EditorView.theme({
   '&': { height: '100%' },
+  '.cm-content': { padding: '16px' },
   '.cm-scroller': { overflow: 'auto' },
 })
 

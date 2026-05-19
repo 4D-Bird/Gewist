@@ -70,21 +70,15 @@ const components: Partial<Components> = {
 
 interface PreviewProps {
   content: string
-  isDark: boolean
 }
 
-export default function Preview({ content, isDark }: PreviewProps) {
+export default function Preview({ content }: PreviewProps) {
   return (
     <div
       id="preview-pane"
-      className={`h-full overflow-auto ${isDark ? 'bg-[#282c34]' : 'bg-white'}`}
+      className="h-full overflow-auto bg-white dark:bg-dark-base"
     >
-      <div
-        className={[
-          'prose max-w-3xl mx-auto py-10 px-10',
-          isDark ? 'prose-invert' : 'prose-slate',
-        ].join(' ')}
-      >
+      <div className="prose prose-slate dark:prose-invert max-w-3xl mx-auto py-10 px-10">
         <ReactMarkdown remarkPlugins={[remarkGfm]} components={components}>
           {content}
         </ReactMarkdown>
