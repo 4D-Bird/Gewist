@@ -60,7 +60,7 @@ console.log(greet('world'))
 
 ### Links
 
-[Visit GitHub](https://github.com) — links open in a new tab.
+[Gewist on GitHub](https://github.com/4D-Bird/Gewist) — links open in a new tab.
 
 ---
 
