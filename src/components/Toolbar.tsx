@@ -1,9 +1,10 @@
 import { useRef } from 'react'
-import type { ViewMode } from '../store/useStore'
+import type { ViewMode } from '../lib/config'
+import { useStore } from '../store/useStore'
+import { AppConfig } from '../lib/config'
 
 interface ToolbarProps {
   viewMode: ViewMode
-  isDark: boolean
   fileName: string
   wordCount: number
   isSidebarOpen: boolean
@@ -16,7 +17,6 @@ interface ToolbarProps {
 
 export default function Toolbar({
   viewMode,
-  isDark,
   fileName,
   wordCount,
   isSidebarOpen,
@@ -26,15 +26,34 @@ export default function Toolbar({
   onLoadFile,
   onExport,
 }: ToolbarProps) {
+  // isDark and tab-indent setting are global — read directly from the store.
+  const isDark = useStore((s) => s.isDark)
+  const tabIndent = useStore((s) => s.tabIndent)
+  const toggleTabIndent = useStore((s) => s.toggleTabIndent)
+
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
+
+    if (file.size > AppConfig.MAX_FILE_SIZE_BYTES) {
+      alert(
+        `File is too large (${(file.size / 1_000_000).toFixed(1)} MB). ` +
+        `Maximum allowed size is ${AppConfig.MAX_FILE_SIZE_BYTES / 1_000_000} MB.`,
+      )
+      e.target.value = ''
+      return
+    }
+
     const reader = new FileReader()
     reader.onload = (ev) => {
       const text = ev.target?.result
       if (typeof text === 'string') onLoadFile(text, file.name)
+    }
+    reader.onerror = () => {
+      console.error('Failed to read file:', file.name)
+      alert(`Could not read “${file.name}”. The file may be corrupted.`)
     }
     reader.readAsText(file)
     e.target.value = '' // allow re-loading the same file
@@ -43,7 +62,7 @@ export default function Toolbar({
   // ── Style helpers ──────────────────────────────────────────────────────────
 
   const bar = isDark
-    ? 'bg-[#21252b] border-gray-700 text-gray-300'
+    ? 'bg-dark-elevated border-gray-700 text-gray-300'
     : 'bg-white border-gray-200 text-gray-700'
 
   const divider = `inline-block w-px h-4 mx-1 align-middle ${isDark ? 'bg-gray-700' : 'bg-gray-300'}`
@@ -96,6 +115,19 @@ export default function Toolbar({
       </button>
       <button onClick={() => onViewModeChange('preview')} className={btn(viewMode === 'preview')} title="Preview only">
         Preview
+      </button>
+
+      <span className={divider} />
+
+      {/* Tab-indent toggle */}
+      <button
+        onClick={toggleTabIndent}
+        className={btn(tabIndent)}
+        title={tabIndent ? 'Tab key indents — click to disable (use Esc to leave editor)' : 'Tab key navigates — click to enable indentation'}
+        aria-label={tabIndent ? 'Tab indentation on' : 'Tab indentation off'}
+        aria-pressed={tabIndent}
+      >
+        Tab⇥
       </button>
 
       <span className={divider} />

@@ -37,13 +37,12 @@ export default function App() {
   return (
     <div
       className={`flex flex-col h-screen overflow-hidden ${
-        isDark ? 'bg-[#282c34] text-gray-200' : 'bg-white text-gray-900'
+        isDark ? 'bg-dark-base text-gray-200' : 'bg-white text-gray-900'
       }`}
     >
       {/* ── Toolbar ────────────────────────────────────────────────────────── */}
       <Toolbar
         viewMode={viewMode}
-        isDark={isDark}
         fileName={fileName}
         wordCount={words}
         isSidebarOpen={isSidebarOpen}
@@ -57,7 +56,7 @@ export default function App() {
       {/* ── Body ───────────────────────────────────────────────────────────── */}
       <div className="flex flex-1 overflow-hidden">
         {/* Sidebar */}
-        {isSidebarOpen && <Sidebar entries={toc} isDark={isDark} />}
+        {isSidebarOpen && <Sidebar entries={toc} />}
 
         {/* Main pane(s) */}
         <main className="flex flex-1 overflow-hidden">
@@ -67,7 +66,7 @@ export default function App() {
                 showPreview ? `border-r ${paneBorder}` : ''
               }`}
             >
-              <Editor content={content} onChange={setContent} isDark={isDark} />
+              <Editor content={content} onChange={setContent} />
             </div>
           )}
 

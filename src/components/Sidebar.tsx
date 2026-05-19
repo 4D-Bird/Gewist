@@ -1,21 +1,43 @@
+import ReactMarkdown from 'react-markdown'
 import type { TocEntry } from '../lib/markdown'
+import { useStore } from '../store/useStore'
 
 interface SidebarProps {
   entries: TocEntry[]
-  isDark: boolean
+  // isDark is read directly from the store
 }
 
-export default function Sidebar({ entries, isDark }: SidebarProps) {
+// Render heading text with inline markdown (bold, italic, code, strikethrough).
+// The <p> wrapper react-markdown adds by default is stripped via the component override.
+const InlineMarkdown = ({ text }: { text: string }) => (
+  <ReactMarkdown components={{ p: ({ children }) => <>{children}</> }}>
+    {text}
+  </ReactMarkdown>
+)
+
+// ── Component ─────────────────────────────────────────────────────────────────
+
+export default function Sidebar({ entries }: SidebarProps) {
+  const isDark = useStore((s) => s.isDark)
+  const viewMode = useStore((s) => s.viewMode)
+  const setViewMode = useStore((s) => s.setViewMode)
+
   const scrollToHeading = (id: string) => {
-    // Prefer scrolling within the preview pane when it's visible
-    const target = document.getElementById(id)
-    if (target) {
-      target.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    // If the preview pane isn't visible, switch to split first so the
+    // target element exists in the DOM before we try to scroll to it.
+    if (viewMode === 'editor') {
+      setViewMode('split')
+      // Yield to the next paint so the preview pane is mounted.
+      setTimeout(() => {
+        document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }, 50)
+      return
     }
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
   const base = isDark
-    ? 'bg-[#21252b] border-gray-700 text-gray-300'
+    ? 'bg-dark-elevated border-gray-700 text-gray-300'
     : 'bg-gray-50 border-gray-200 text-gray-700'
 
   const labelStyle = isDark ? 'text-gray-500' : 'text-gray-400'
@@ -34,9 +56,9 @@ export default function Sidebar({ entries, isDark }: SidebarProps) {
         {entries.length === 0 ? (
           <p className={`text-xs px-2 mt-1 ${emptyStyle}`}>No headings found.</p>
         ) : (
-          entries.map((entry, i) => (
+          entries.map((entry) => (
             <button
-              key={i}
+              key={`${entry.level}-${entry.id}`}
               onClick={() => scrollToHeading(entry.id)}
               title={entry.text}
               className={`
@@ -46,9 +68,9 @@ export default function Sidebar({ entries, isDark }: SidebarProps) {
               style={{ paddingLeft: `${(entry.level - 1) * 10 + 8}px` }}
             >
               {entry.level === 1 ? (
-                <span className="font-semibold">{entry.text}</span>
+                <span className="font-semibold"><InlineMarkdown text={entry.text} /></span>
               ) : (
-                entry.text
+                <InlineMarkdown text={entry.text} />
               )}
             </button>
           ))

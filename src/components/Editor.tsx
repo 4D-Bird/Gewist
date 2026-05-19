@@ -22,6 +22,7 @@ import {
   bracketMatching,
   indentOnInput,
 } from '@codemirror/language'
+import { useStore } from '../store/useStore'
 
 // ── Light theme ──────────────────────────────────────────────────────────────
 
@@ -51,19 +52,33 @@ const baseLayout = EditorView.theme({
   '.cm-scroller': { overflow: 'auto' },
 })
 
+// ── Escape-to-exit: always active regardless of tab-indent setting ─────────────
+// Blurs the editor so keyboard users can Tab away to other UI elements.
+
+const escapeKeymap = keymap.of([{
+  key: 'Escape',
+  run: (view) => {
+    view.contentDOM.blur()
+    return true
+  },
+}])
+
 // ── Component ─────────────────────────────────────────────────────────────────
 
 interface EditorProps {
   content: string
   onChange: (value: string) => void
-  isDark: boolean
 }
 
-export default function Editor({ content, onChange, isDark }: EditorProps) {
+export default function Editor({ content, onChange }: EditorProps) {
+  const isDark = useStore((s) => s.isDark)
+  const tabIndent = useStore((s) => s.tabIndent)
+
   const containerRef = useRef<HTMLDivElement>(null)
   const viewRef = useRef<EditorView | null>(null)
-  // Keep a stable Compartment instance across renders
+  // Keep stable Compartment instances across renders
   const themeCompartment = useRef(new Compartment())
+  const keymapCompartment = useRef(new Compartment())
   // Flag to prevent echoing external updates back to the store
   const isExternalUpdate = useRef(false)
 
@@ -86,7 +101,9 @@ export default function Editor({ content, onChange, isDark }: EditorProps) {
           markdown({ base: markdownLanguage }),
           themeCompartment.current.of(isDark ? oneDark : lightTheme),
           baseLayout,
-          keymap.of([...defaultKeymap, ...historyKeymap, indentWithTab]),
+          keymap.of([...defaultKeymap, ...historyKeymap]),
+          keymapCompartment.current.of(tabIndent ? keymap.of([indentWithTab]) : []),
+          escapeKeymap,
           EditorView.updateListener.of((update) => {
             if (update.docChanged && !isExternalUpdate.current) {
               onChange(update.state.doc.toString())
@@ -118,6 +135,15 @@ export default function Editor({ content, onChange, isDark }: EditorProps) {
       isExternalUpdate.current = false
     }
   }, [content])
+
+  // ── Sync tab-indent keymap ─────────────────────────────────────────────────
+  useEffect(() => {
+    viewRef.current?.dispatch({
+      effects: keymapCompartment.current.reconfigure(
+        tabIndent ? keymap.of([indentWithTab]) : [],
+      ),
+    })
+  }, [tabIndent])
 
   // ── Sync theme ─────────────────────────────────────────────────────────────
   useEffect(() => {

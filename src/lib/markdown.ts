@@ -30,25 +30,35 @@ export function extractToc(markdown: string): TocEntry[] {
   let match: RegExpExecArray | null
   while ((match = headingRegex.exec(markdown)) !== null) {
     const level = match[1].length
-    // Strip any trailing `#` characters and inline markup for display text
+    // Strip any trailing `#` characters; preserve inline markup for display
     const raw = match[2].replace(/\s+#+\s*$/, '').trim()
     const base = slugify(raw)
 
-    const count = usedSlugs.get(base) ?? 0
-    const id = count === 0 ? base : `${base}-${count}`
-    usedSlugs.set(base, count + 1)
+    // Walk the counter until we find an ID not yet taken by any heading
+    // (including naturally-occurring ones like "Foo-1" that could collide
+    // with the de-duplicated form of a repeated "Foo").
+    let n = usedSlugs.get(base) ?? 0
+    let candidate = n === 0 ? base : `${base}-${n}`
+    while (usedSlugs.has(candidate)) {
+      n++
+      candidate = `${base}-${n}`
+    }
+    usedSlugs.set(candidate, 0)   // mark this exact id as taken
+    usedSlugs.set(base, n + 1)    // advance the counter for next duplicate
 
-    entries.push({ id, text: raw, level })
+    entries.push({ id: candidate, text: raw, level })
   }
 
   return entries
 }
 
-/** Count words in Markdown text (strips code blocks for accuracy). */
+/** Count words in Markdown text (strips code blocks and link URLs for accuracy). */
 export function countWords(text: string): number {
   const cleaned = text
-    .replace(/```[\s\S]*?```/g, '')  // fenced code blocks
-    .replace(/`[^`]+`/g, '')         // inline code
-  const words = cleaned.match(/[^\s]+/g)
+    .replace(/```[\s\S]*?```/g, '')           // fenced code blocks
+    .replace(/`[^`]+`/g, '')                  // inline code
+    .replace(/!\[[^\]]*\]\([^)]+\)/g, '')     // images (not words)
+    .replace(/\[([^\]]*)\]\([^)]+\)/g, '$1') // links → keep label text, drop URL
+  const words = cleaned.match(/\S+/g)
   return words ? words.length : 0
 }

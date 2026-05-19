@@ -43,17 +43,23 @@ const headingComponents = {
   h6: makeHeading(6),
 } satisfies Partial<Components>
 
-// Open external links in a new tab safely
-const linkComponent: Components['a'] = ({ href, children, ...props }) => (
-  <a
-    href={href}
-    target={href?.startsWith('http') ? '_blank' : undefined}
-    rel={href?.startsWith('http') ? 'noopener noreferrer' : undefined}
-    {...props}
-  >
-    {children}
-  </a>
-)
+// Only allow safe URL schemes; reject javascript:, data:, vbscript:, etc.
+const SAFE_HREF = /^(https?:\/\/|mailto:|ftp:\/\/|\/|#)/i
+
+const linkComponent: Components['a'] = ({ href, children, ...props }) => {
+  const safeHref = href && SAFE_HREF.test(href) ? href : undefined
+  const isExternal = safeHref?.startsWith('http')
+  return (
+    <a
+      href={safeHref}
+      target={isExternal ? '_blank' : undefined}
+      rel={isExternal ? 'noopener noreferrer' : undefined}
+      {...props}
+    >
+      {children}
+    </a>
+  )
+}
 
 const components: Partial<Components> = {
   ...headingComponents,
