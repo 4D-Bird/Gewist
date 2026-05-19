@@ -61,26 +61,26 @@ export default function Toolbar({
 
   // ── Style helpers ──────────────────────────────────────────────────────────
 
-  const bar = 'bg-white dark:bg-dark-elevated border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300'
+  const bar = 'bg-surface border-border'
 
-  const divider = 'inline-block w-px h-4 mx-1 align-middle bg-gray-300 dark:bg-gray-700'
+  const divider = 'inline-block w-px h-4 mx-1 align-middle bg-border'
 
   const btn = (active?: boolean) =>
     [
       'px-2.5 py-1 text-sm rounded font-medium transition-colors select-none',
       active
-        ? 'bg-blue-500 dark:bg-blue-600 text-white'
-        : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700',
+        ? 'bg-accent text-white'
+        : 'text-foreground-soft hover:text-foreground hover:bg-surface-hover',
     ].join(' ')
 
-  const meta = 'text-gray-400 dark:text-gray-500'
+  const meta = 'text-foreground-muted'
 
   return (
     <header
       className={`flex items-center gap-1 px-3 py-1.5 border-b flex-shrink-0 ${bar}`}
     >
       {/* Brand */}
-      <span className="text-sm font-bold tracking-tight mr-2 text-gray-800 dark:text-gray-100">
+      <span className="text-sm font-bold tracking-tight mr-2">
         Gewist
       </span>
 

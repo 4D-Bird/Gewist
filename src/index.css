@@ -2,6 +2,30 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Semantic colour tokens ──────────────────────────────────────────── */
+
+:root {
+  --background:       #ffffff;    /* main workspace canvas              */
+  --surface:          #f9fafb;    /* toolbar + sidebar background       */
+  --surface-hover:    #f3f4f6;    /* button / row hover background      */
+  --border:           #e5e7eb;    /* all borders and inline dividers    */
+  --foreground:       #111827;    /* primary text                       */
+  --foreground-soft:  #6b7280;    /* inactive buttons, secondary labels */
+  --foreground-muted: #9ca3af;    /* meta info, section headers         */
+  --accent:           #3b82f6;    /* interactive highlight (active btn) */
+}
+
+.dark {
+  --background:       #282c34;
+  --surface:          #21252b;
+  --surface-hover:    #374151;
+  --border:           #374151;
+  --foreground:       #e5e7eb;
+  --foreground-soft:  #9ca3af;
+  --foreground-muted: #6b7280;
+  --accent:           #2563eb;
+}
+
 /* ── CodeMirror base overrides ───────────────────────────────────────── */
 
 .cm-editor {

@@ -5,9 +5,21 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        /** One Dark — shared between the app shell and CodeMirror's oneDark theme. */
-        'dark-base':     '#282c34', // main background
-        'dark-elevated': '#21252b', // toolbar / sidebar surface
+        /** Semantic tokens — values live in index.css as CSS custom properties.
+         *  Light/dark switching is handled by the .dark class on <html>;
+         *  no dark: variants are needed in component markup for these tokens. */
+        background: 'var(--background)',
+        surface: {
+          DEFAULT: 'var(--surface)',
+          hover:   'var(--surface-hover)',
+        },
+        border:  'var(--border)',
+        foreground: {
+          DEFAULT: 'var(--foreground)',
+          soft:    'var(--foreground-soft)',
+          muted:   'var(--foreground-muted)',
+        },
+        accent: 'var(--accent)',
       },
     },
   },

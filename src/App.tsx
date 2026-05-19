@@ -33,7 +33,7 @@ export default function App() {
   const showPreview = viewMode === 'preview' || viewMode === 'split'
 
   return (
-    <div className="flex flex-col h-screen overflow-hidden bg-white dark:bg-dark-base text-gray-900 dark:text-gray-200">
+    <div className="flex flex-col h-screen overflow-hidden bg-background text-foreground">
       {/* ── Toolbar ────────────────────────────────────────────────────────── */}
       <Toolbar
         viewMode={viewMode}
@@ -57,7 +57,7 @@ export default function App() {
           {showEditor && (
             <div
               className={`flex-1 overflow-hidden ${
-                showPreview ? 'border-r border-gray-200 dark:border-gray-700' : ''
+                showPreview ? 'border-r border-border' : ''
               }`}
             >
               <Editor content={content} onChange={setContent} />

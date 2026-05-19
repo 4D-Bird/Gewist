@@ -76,7 +76,7 @@ export default function Preview({ content }: PreviewProps) {
   return (
     <div
       id="preview-pane"
-      className="h-full overflow-auto bg-white dark:bg-dark-base"
+      className="h-full overflow-auto bg-background"
     >
       <div className="prose prose-slate dark:prose-invert max-w-3xl mx-auto py-10 px-10">
         <ReactMarkdown remarkPlugins={[remarkGfm]} components={components}>

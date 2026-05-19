@@ -36,23 +36,23 @@ export default function Sidebar({ entries }: SidebarProps) {
   }
 
   return (
-    <aside className="w-56 flex-shrink-0 border-r flex flex-col overflow-hidden bg-gray-50 dark:bg-dark-elevated border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300">
+    <aside className="w-56 flex-shrink-0 border-r flex flex-col overflow-hidden bg-surface border-border">
       <div className="px-4 pt-4 pb-2 flex-shrink-0">
-        <p className="text-[10px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500">
+        <p className="text-[10px] font-semibold uppercase tracking-widest text-foreground-muted">
           Contents
         </p>
       </div>
 
       <nav className="flex-1 overflow-y-auto px-2 pb-4">
         {entries.length === 0 ? (
-          <p className="text-xs px-2 mt-1 text-gray-400 dark:text-gray-600">No headings found.</p>
+          <p className="text-xs px-2 mt-1 text-foreground-muted">No headings found.</p>
         ) : (
           entries.map((entry) => (
             <button
               key={`${entry.level}-${entry.id}`}
               onClick={() => scrollToHeading(entry.id)}
               title={entry.text}
-              className="w-full text-left text-xs py-1 px-2 rounded transition-colors truncate hover:bg-gray-200 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-gray-100"
+              className="w-full text-left text-xs py-1 px-2 rounded transition-colors truncate hover:bg-surface-hover hover:text-foreground"
               style={{ paddingLeft: `${(entry.level - 1) * 10 + 8}px` }}
             >
               {entry.level === 1 ? (
