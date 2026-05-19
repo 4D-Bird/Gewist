@@ -1,0 +1,32 @@
+[package]
+name = "gewist"
+version = "0.1.0"
+description = "Markdown editing without choosing between an IDE and a writing app."
+authors = ["4D Bird <4d-bird@4d-bird.de>"]
+license = ""
+repository = "https://github.com/4D-Bird/Gewist"
+edition = "2021"
+rust-version = "1.77.2"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+name = "app_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2.6.2", features = [] }
+
+[dependencies]
+serde_json = "1.0"
+serde = { version = "1.0", features = ["derive"] }
+log = "0.4"
+tauri = { version = "2.11.2", features = [] }
+tauri-plugin-log = "2"
+
+[profile.release]
+opt-level = "s"   # optimise for size over speed
+lto = true        # link-time optimisation (removes dead code across crates)
+codegen-units = 1 # single codegen unit enables better LTO
+panic = "abort"   # smaller panic machinery
+strip = true      # strip debug symbols from the final binary
