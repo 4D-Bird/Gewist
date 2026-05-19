@@ -28,6 +28,8 @@ module.exports = {
           css: {
             'code::before': { content: 'none' },
             'code::after':  { content: 'none' },
+            'blockquote p:first-of-type::before': { content: 'none' },
+            'blockquote p:last-of-type::after':  { content: 'none' },
           },
         },
       },

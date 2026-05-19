@@ -4,6 +4,7 @@ import remarkGfm from 'remark-gfm'
 import type { Components } from 'react-markdown'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { oneDark, oneLight } from 'react-syntax-highlighter/dist/esm/styles/prism'
+import remarkBreaks from 'remark-breaks'
 import { slugify } from '../lib/markdown'
 import { useStore } from '../store/useStore'
 
@@ -114,7 +115,7 @@ export default function Preview({ content }: PreviewProps) {
       className="h-full overflow-auto bg-background"
     >
       <div className="prose prose-slate dark:prose-invert max-w-3xl mx-auto py-10 px-10">
-        <ReactMarkdown remarkPlugins={[remarkGfm]} components={components} key={isDark ? 'dark' : 'light'}>
+        <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreaks]} components={components} key={isDark ? 'dark' : 'light'}>
           {content}
         </ReactMarkdown>
       </div>
